@@ -1,23 +1,29 @@
 //Nome:Mateus Augusto Ferreira Almeida
 //Matricula:11811EEL023
-#include<stdio.h>
-int main(){
-	int i=0,j=0;
-	char num[256];
-	printf("Digite um conjunto com caracteres: ");
-	scanf("%s",&num);getchar();
-	printf("Os numeros presente no conjunto de caracteres sao: ");
-	while(num[i]!='\0'){
-		if(num[i]>='0' && num[i]<='9'){
-			num[i]=num[i]-48;
-			printf("%d",num[i]);
-			i++;
-		}
-		else{
-			i++;
-			j++;
-		}
+#include <stdio.h>
+
+void converter(int v[], char s[])
+{
+	int i, num=0, n;
+	for(i=0; s[i] != '\0';i++)
+	{
+		if(s[i] >= '0' && s[i] <= '9')
+		v[i] = s[i] - '0';
 	}
-	if(j==i)
-	printf("0");
+	n=i;
+	for(i=0; i<n; i++)
+	{	if(s[i] >= '0' && s[i] <= '9')
+	num = num*10 + v[i];}
+	
+	printf("\nO numero eh: %d", num);
+	}
+
+int main()
+{
+	char s[256];
+	int v[256];
+	printf("Digite algo: ");
+	scanf("%s", s);
+	converter(v,s);
+	return 0;
 }
