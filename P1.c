@@ -1,37 +1,32 @@
 /* Aluno: Mateus Augusto Ferreira Almeida
 Matricula: 11811EEL023 */
 
-#include<stdio.h>
-
-
+#include <stdio.h>
 int main(){
-
-char bits[256];
-int estado=0, i=0;
-
-scanf("%s", &bits);
-for(i=0; bits[i]!='\0'; i++){
-	if(bits[i]=='0'&&estado==0){
-		estado=0;
-	}else if(bits[i]=='1'&&estado==0){
-		estado=1;
-	}else if(bits[i]=='1'&&estado==1){
-		estado=0;
-	}else if(bits[i]=='0'&&estado==1){
-		estado=2;
-	}else if(bits[i]=='0'&&estado==2){
-		estado=1;
-	}else if(bits[i]=='1'&&estado==2){
-		estado=2;
+	int i=0,j=0,s1,s2,s3;
+	char bin [256];
+	printf("Digite o numero binario:");
+	scanf ("%s",bin);
+	while (bin[j]!='\0'){
+		if(i==0 && bin[j]=='0')
+		i=0;
+		else if(i==0&&bin[j]=='1')
+		i=1;
+		else if(i==1&&bin[j]=='0')
+		i=2;
+		else if(i==2&&bin[j]=='1')
+		i=2;
+		else if(i==2&&bin[j]=='0')
+		i=1;
+		else
+		i=0;
+		j++;
 	}
-}
-
-if(estado==0){
-	printf("%s e multiplo de 3\n", bits);
-}else{
-	printf("%s nao e\n", bits);
-}
-
-return 0;
-
+	if (i==0){
+		printf("O numero %s e multiplo de 3",bin);
+	}
+	else{
+		printf("O numero %s nao e multiplo de 3",bin);
+	}
+	
 }
