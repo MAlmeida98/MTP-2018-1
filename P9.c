@@ -22,7 +22,7 @@ void  cadastrar ( struct Produto Quant [], int i)
 	scanf ( " % f " , & Quant [i]. dimensoes . largura );
 	scanf ( " % f " , & Quant [i]. dimensoes . profundidade );
 	scanf ( " % f " , & Quant [i]. dimensoes . altura );
-	printf ( " Produto % d cadastrado com sucesso! \ n " , i + 1 );
+	printf ( " Produto % d cadastrado com sucesso! \n " , i + 1 );
 }
 
 void  consultar ( struct Produto Quant [], int i)
@@ -32,7 +32,7 @@ void  consultar ( struct Produto Quant [], int i)
 		printf ( " % s , R $ % .2f , L: % .2fm x P: % .2fm x A: % .2f m \ n " , Quant [i] nome , Quant [i]. preco , +
 			+ Quant [i]. dimensoes . largura , Quant [i]. dimensoes . profundidade , Quant [i]. dimensoes . altura );
 	outro
-		printf ( " Produto nao cadastrado! \ n " );
+		printf ( " Produto nao cadastrado! \n " );
 
 }
 
@@ -53,7 +53,7 @@ int  main ()
 		else  if (op == 2 )
 			consultar (Quant, pro- 1 );
 		outro
-			printf ( " Entrada invalida! \ n " );
+			printf ( " Entrada invalida! \n " );
 
 	}
 
