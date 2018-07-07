@@ -1,48 +1,44 @@
 // Aluno: Mateus Augusto Ferreira Almeida
 // Matricula: 11811EEL023
 
-#include < stdio.h >
-#include < stdlib.h >
-
+#include <stdio.h>
+#include <stdlib.h>
+#define max 100
 void gera_numeros(float * vetor, int tam)
 {
 	int i;
 	float num;
-
-	for(i = 0; i < tam; i++)
+	for(i=0; i<tam; i++)
 		vetor[i] = (float) rand()/(float) RAND_MAX + 0.5f;
 }
-
-float reduce(float * pini, float * pfim, float (*funcao)(float, float))
+float soma(float *inicio_vetor, float *fim_vetor) 
 {
-	return (pini == pfim)? 1 : (*funcao)(*pini, reduce(pini+1, pfim, funcao));
+	return (inicio_vetor == fim_vetor)? 0.0 : *inicio_vetor + soma(inicio_vetor+1, fim_vetor);
 }
-
-float soma(float a, float b)
+float produto(float *inicio_vetor, float *fim_vetor) 
 {
-	return a+b;
+	return (inicio_vetor == fim_vetor)? 1.0 : *inicio_vetor * produto(inicio_vetor+1, fim_vetor);
 }
-
-float multiplicacao(float a, float b)
-{
-	return a*b;
-}
-
 int main()
 {
 	srand(123456);
-	float vetor[100];
-	int op;
-
-	gera_numeros(vetor, 100);
-	printf("1 - Somatorio\n2 - Produtorio\n");
-	scanf("%d", &op);
-	getchar();
-
-	if(op==1)
-		printf("%f\n", reduce(vetor, vetor+100, soma)-1);
-	else if(op==2)
-		printf("%f\n", reduce(vetor, vetor+100, multiplicacao));
-
+	float v[max];
+	int op=0;
+	gera_numeros(v, max);
+	do
+	{
+		printf("\n1 - Somatorio\n2 - Produtorio\n");
+		scanf("%d", &op);
+		getchar();
+		switch (op)
+		{
+			case 1:
+				printf("\n%f\n", soma(v, v + max)); 
+				break;
+			case 2:
+				printf("\n%f\n", produto(v, v + max)); 
+				break;
+		}
+	}while(op==1 || op==2);
 	return 0;
 }
