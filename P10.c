@@ -1,181 +1,132 @@
 // Aluno: Mateus Augusto Ferreira Almeida
 // Matricula: 11811EEL023
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 64
 
-#define NCHAR_NOME 64
-
-typedef struct
-{
-	float largura, profundidade, altura;
+typedef struct Dimensoes{
+    float altura;
+    float largura;
+    float profundidade;
 }Dimensoes;
 
-typedef struct
-{
-	char nome[NCHAR_NOME];
-	float preco;
-	Dimensoes dimensoes;
+typedef struct Produto{
+    char nome[MAX];
+    float preco;
+    Dimensoes dimensoes;
 }Produto;
 
-int sizeofFile(char nomearquivo[NCHAR_NOME])
-{
-	int sof = 0;
-
-	FILE* arquivo = fopen(nomearquivo, "rb");
-
-	if (arquivo)
-	{
-		fseek(arquivo, 0, SEEK_END);
-		sof = ftell(arquivo); // retorna o valor atual do ponteiro de posicao no arquivo
-		fclose(arquivo);
-	}else
-	{
-		fprintf(stderr, ">>> Arquivo nao encontrado!\n");
-		sof = -1;
-	}
-
-	return sof;
+void cadastra(Produto * p){
+    printf("\nDigite o nome do produto: ");
+    fgets(p->nome, MAX, stdin);
+    p->nome[strlen(p->nome)-1] = '\0';
+    printf("\nDigite o preco: ");
+    scanf("%f", &(p->preco));
+    getchar();
+    printf("\nDigite a largura: ");
+    scanf("%f", &(p->dimensoes.largura));
+    getchar();
+    printf("\nDigite a profundidade: ");
+    scanf("%f", &(p->dimensoes.profundidade));
+    getchar();
+    printf("\nDigite a altura: ");
+    scanf("%f", &(p->dimensoes.altura));
+    getchar();
 }
 
-
-void cadastrarNovo(Produto *p, int cont)
-{
-	printf("Nome do produto: ");
-	scanf("%s", p[cont].nome); getchar();
-	printf("Preco: ");
-	scanf("%f", &p[cont].preco); getchar();
-	printf("Largura: ");
-	scanf("%f", &p[cont].dimensoes.largura); getchar();
-	printf("Profundidade: ");
-	scanf("%f", &p[cont].dimensoes.profundidade); getchar();
-	printf("Altura:");
-	scanf("%f", &p[cont].dimensoes.altura); getchar();
-	printf("\nCadastrado com sucesso!\n\n");
+void consulta(Produto * p){
+    char c;
+    if(strlen(p->nome) == 0){
+        printf("\nProduto nao encontrado!\n");
+        while((c=getchar()) != '\n');
+        return;
+    }
+    printf("\n%s, R$ %.2f, L: %.2fm x P: %.2fm x A: %.2fm\n", p->nome, p->preco,(p->dimensoes.largura),(p->dimensoes.profundidade), (p->dimensoes.altura));
+    while((c=getchar())!='\n');
 }
 
-void consultar(Produto *p, int cont)
-{
-	if(cont == 0)
-		printf("\nNenhum produto cadastrado!\n\n");
-	else
-	{
-		int i, op;
-		printf("Produtos em memoria: %d\n0. Voltar\n", cont);
+int main(){
+    int opt1=-1, opt2=0, np=0, i;
+    char c, fil[MAX];
+    FILE * f;
+    Produto * produtos = (Produto *) calloc(1, sizeof(Produto));
 
-		for(i = 0 ; i < cont; i++)
-			printf("%d. %s\n", i+1, p[i].nome);
-
-		printf("\nOpcao escolhida: ");
-		scanf("%d", &op);
-		getchar();
-
-		if(op != 0)
-		{
-			if(op>cont)
-				printf("Produto inexistente!\n\n");
-			else
-			{
-				op--;
-				printf("%s, R$ %.2f, L: %.2f m x P: %.2f m x A: %.2f m\n\n", p[op].nome, p[op].preco, p[op].dimensoes.largura, p[op].dimensoes.profundidade, p[op].dimensoes.altura);
-			}
-		}
-	}
-}
-
-void abrirArq(Produto *p, int *cont)
-{
-	FILE *arquivo;
-	char nomearquivo[NCHAR_NOME];
-
-	printf("\nNome do arquivo: ");
-	scanf("%s", nomearquivo);
-
-	int sof = sizeofFile(nomearquivo), i;
-
-	if (sof > 0)
-	{
-		arquivo = fopen(nomearquivo, "rb");
-		*cont = sof/sizeof(Produto);
-		p = (Produto *) realloc(p, *cont*sizeof(Produto));
-		if(p!=NULL)
-		{
-			for(i = 0; i < *cont; i++)
-			{
-				fread(p[i].nome, sizeof(char), NCHAR_NOME, arquivo);
-				fread(&p[i].preco, sizeof(float), 1, arquivo);
-				fread(&p[i].dimensoes.largura, sizeof(float), 1, arquivo);
-				fread(&p[i].dimensoes.profundidade, sizeof(float), 1, arquivo);
-				fread(&p[i].dimensoes.altura, sizeof(float), 1, arquivo);
-			}
-			printf("\nArquivo contem %d produto(s). Leitura realizada com sucesso!\n\n", *cont);
-		}
-		else {
-			fprintf(stderr, ">>> Problema de realocacao da memoria!\n\n");
-			cont = 0;
-		}
-	fclose(arquivo);
-	}else
-		fprintf(stderr, ">>> Carregamento nao efetuado!\n\n");
-}
-
-void salvarArq(Produto *p, int cont)
-{
-	FILE *arq;
-	int i = 0;
-	char nomearquivo[NCHAR_NOME];
-
-	printf("\nNome do arquivo: ");
-	scanf("%s", nomearquivo); getchar();
-
-	if((arq = fopen(nomearquivo,"wb")) != NULL)
-	{
-		for(i = 0; i < cont; i++)
-		{
-			fwrite(p[i].nome, sizeof(char), NCHAR_NOME, arq);
-			fwrite(&p[i].preco, sizeof(float), 1, arq);
-			fwrite(&p[i].dimensoes.largura, sizeof(float), 1, arq);
-			fwrite(&p[i].dimensoes.profundidade, sizeof(float), 1, arq);
-			fwrite(&p[i].dimensoes.altura, sizeof(float), 1, arq);
-		}
-		printf("Produtos armazenados em disco com sucesso!\n\n");
-		fclose(arq);
-	}else
-		printf("Erro: não foi possível abrir o arquivo\n\n");
-}
-
-int main()
-{
-	Produto *p;
-	int cont = 0, op;
-	p = malloc(sizeof(Produto));
-
-	do
-	{
-		printf("Produtos em memoria: %d\n\n1. Consultar\n2. Cadastrar novo\n3. Carregar de arquivo para memoria (sobrescreve memoria)"
-				"\n4. Salvar memoria em arquivo (sobrescreve arquivo)\n0. Encerra\n\nOpcao escolhida: ", cont);
-		scanf("%d", &op); getchar();
-
-		switch(op)
-		{
-			case 1:
-				consultar(p, cont);
-				break;
-			case 2:
-				cadastrarNovo(p, cont);
-				cont++;
-				break;
-			case 3:
-				abrirArq(p, &cont);
-				break;
-			case 4:
-				salvarArq(p, cont);
-				break;
-		}
-	}while(op!=0);
-
-	free(p);
-
-	return 0;
+    while(opt1 != 0){
+        printf("Acessar produtos cadastrados: %d", np);
+        printf("\n1. Consultar\n2. Cadastrar novo produto\n3. Carregar de arquivo para memoria \n4. Salvar memoria em arquivo \n0. Sair\n> ");
+        scanf("%d", &opt1);
+        getchar();
+        opt2 = -1;
+        switch(opt1){
+            case 1:
+                while(opt2!=0){
+                	if(np == 0){
+                		printf("\nNenhum produto cadastrado!\n");
+                		while((c=getchar()) != '\n');
+                		break;
+					}
+                    printf("\nConsulta de Produtos\n");
+                    printf("\nProdutos em memoria: %d", np);
+                    printf("\n0. Voltar");
+                    for(i=0; i<np; i++)
+                        printf("\n%d. %s", i+1, produtos[i].nome);
+                    printf("\n> ");
+                    scanf("%d", &opt2);
+                    getchar();
+                    if(opt2>0 && opt2<=np)
+                        consulta(&produtos[opt2-1]);
+                    if(opt2<0 || opt2>np)
+                        printf("\nProduto inexistente!\n");
+                }
+                break;
+            case 2:
+            	np++;
+                produtos = (Produto *) realloc(produtos, np * sizeof(produtos));
+                cadastra(&produtos[np-1]);
+                printf("\nCadastrado com sucesso!\n");
+                while((c=getchar()) != '\n');
+                break;
+            case 3:
+            	printf("\nDigite o nome do arquivo: ");
+            	scanf("%s", (char *)fil);
+            	getchar();
+                f = fopen(fil, "rb");
+                if(f){
+                    fread(&np, sizeof(int), 1, f);
+                    produtos = (Produto *)calloc(np , sizeof(produtos));
+                    fread((void *)produtos, sizeof(produtos), np, f);
+                    fclose(f);
+                    printf("\nArquivo contem %d produto(s). Leitura realizada com sucesso!\n", np);
+                    while((c=getchar()) != '\n');
+                }else{
+                    printf("\nO arquivo nao pode ser aberto!\n");
+                    while((c=getchar()) != '\n');
+                }
+                break;
+            case 4:
+            	printf("\nDigite o nome do arquivo: ");
+            	scanf("%s", (char *)fil);
+            	getchar();
+            	f = fopen(fil, "wb");
+                if(f){
+                    fwrite(&np, sizeof(int), 1, f);
+                    fwrite(produtos, sizeof(produtos), np, f);
+                    fclose(f);
+                    printf("\nProdutos armazenados em disco com sucesso!!\n");
+                    while((c=getchar()) != '\n');
+                }else{
+                    printf("\nO arquivo nao pode ser aberto!\n");
+                    while((c=getchar()) != '\n');
+                }
+                break;
+            default:
+                if(opt1!=0)
+                    printf("\nOpcao invalida!\n");
+                break;
+        }
+    }
+    free(produtos);
+    return 0;
 }
